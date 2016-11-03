@@ -3,6 +3,7 @@
 #Setting up GUI
 from tkinter import *
 window = Tk()
-canvas = Canvas(window, width=400, height=300, bg='yellow')
+canvas = Canvas(window, width=650, height=650, bg='red')
 canvas.pack()
 window.mainloop()
+
