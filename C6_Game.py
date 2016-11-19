@@ -82,4 +82,74 @@ for i in range(len(bonuses['sp'])):
     x,y=bonuses['sp'][i]
     canvas.create_oval(x-5, y-5, x+5, y+5, width=1, fill='green') 
 
+'''Movement of robots starts here'''
+# The velocity, or distance moved per time step
+vx = 60.0 # x velocity
+vy = 0.0 # y velocity
+
+# Boundaries
+x_min = 10
+y_min = 10
+x_max = 590
+y_max = 590
+
+#Robots
+robot_1=canvas.create_rectangle(10,10,50,50)
+robot_2=canvas.create_rectangle(550,550,590,590)
+
+for t in range(1, 500):
+    x1,y1,x2,y2=canvas.coords(robot_1)
+        
+
+# If a boundary has been approached, make turn
+    if x2 == x_max and vx == 60:
+        vy = 60
+        vx = 0
+    if y2 == y_max and vy == 60:
+        vy = 0
+        vx = -60
+    if x1 == x_min and vx == -60:
+        vy = -60
+        vx = 0
+    if y1 == y_min and ( vy == -60):
+        vy = 0
+        vx = 60
+
+        # Reposition the robot      
+    canvas.coords(robot_1,x1+vx,y1+vy,x2+vx,y2+vy)
+    canvas.update()
+        # Pause for 0.1 seconds, then delete the image
+    time.sleep(0.5)
+
+#Make the robot change direction randomly with possibility 1/5
+    RandomVal=random.randint(1,5)
+    print(RandomVal)
+    if RandomVal == 5:
+        RandomVal1 = random.randint(1,4)
+        if RandomVal1 == 1 and x1 != x_min: # Left
+            print('Left')
+            vx -= 60
+            vy = 0
+            
+        elif RandomVal1 == 2 and x2 != x_max: # Right
+            print('Right')
+            vx += 60
+            vy = 0
+            
+        elif RandomVal1 == 3 and y1 != y_min: # Up
+            print('Up')
+            vy -= 60
+            vx = 0
+            
+        elif RandomVal1 == 4 and y2 != y_max: # Down
+            print('Down')
+            vy += 60
+            vx = 0
+        else:
+            print('The random turn point to the edge, therefore skipped')
+            
+        time.sleep(2.5)           
+        # Reposition the robot      
+        canvas.coords(robot_1,x1+vx,y1+vy,x2+vx,y2+vy)
+        canvas.update()
 
