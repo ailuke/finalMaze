@@ -1,8 +1,8 @@
-Group's C6 game
+# Group's C6 game
 
-# Branch tree:
+## Work remaining
 
-## Master branch
 ###  -Robot in maze branch
-###  -Sudden, Random movement branch
-#####    --S, R movement- buggy 1st robot
+###  Implement 2nd robot
+###  Implement 2 point and 3 point collection
+###  Debug random movement
