@@ -21,20 +21,6 @@ canvas.pack(padx=10,pady=10)
 #---------------------
 #---Functions---------
 
-#---Function to obtain the colour of a pixel(From StackOwerflow)
-def get_pixel_color(canvas, x, y):
-    ids = canvas.find_overlapping(x, y, x, y)
-
-    if len(ids) > 0:
-        index = ids[-1]
-        color = canvas.itemcget(index, "fill")
-        color = color.upper()
-        print(index)
-        if color != '':
-            return color.upper()
-'''Helper funtcions from (http://stackoverflow.com/questions/28014347/get-pixel
-#-colors-of-tkinter-canvas)'''
-
 
 #---Function to create a new tuple without a certain object,
 #---will be needed in order for a robot to  collect coins.
@@ -43,7 +29,6 @@ def get_pixel_color(canvas, x, y):
 #---the robot will obtain the appropriate bonus.
 def pop_from_tuple(value,give_tuple):
     t2=tuple()
-    print(len(give_tuple))
     for indx in range(len(give_tuple)):
             if value!=give_tuple[indx]:
                     t2=t2+(give_tuple[indx],)
@@ -111,6 +96,7 @@ while True:
     x = x1 + 20 # Finding the middle of X coordinatee for ther robot with dimension 40x40
     y = y1 + 20 # Finding the middle of Y coordinatee for ther robot with dimension 40x40
     xy = x , y # Creating a tuple of values to compare with elements in dictionary of bonuses (Dictionary of bonuses only contains middle coordinates)
+
     
     if xy in bonuses['1p']:
         bonuses['1p']=pop_from_tuple(xy,bonuses['1p']) #Function to remove the found element
@@ -119,8 +105,8 @@ while True:
         for i in range(len(bonuses['1p'])): 
             xx, yy, c1, c2 = canvas.coords(yellow_circle[i])
             
-            if x - 5 == xx and y - 5 == yy: 
-                print('Bonus + 1p')
+            
+            if x - 5 == xx and y - 5 == yy:
 
                 #Remove it when found
                 canvas.delete(yellow_circle[i]) 
@@ -128,33 +114,33 @@ while True:
                 
                 robot1_points += 1
                 break
-        
+
 
 #Make the robot change direction randomly with possibility 1/5
     RandomVal=random.randint(1,5)
     if RandomVal == 5:
         RandomVal1 = random.randint(1,4)
         if RandomVal1 == 1 and x1 != x_min: # Left
-            print('Left')
-            vx -= 60
+            #print('Left')
+            vx = -60
             vy = 0
             
         elif RandomVal1 == 2 and x2 != x_max: # Right
-            print('Right')
-            vx += 60
+            #print('Right')
+            vx = 60
             vy = 0
             
         elif RandomVal1 == 3 and y1 != y_min: # Up
-            print('Up')
-            vy -= 60
+            #print('Up')
+            vy = -60
             vx = 0
             
         elif RandomVal1 == 4 and y2 != y_max: # Down
-            print('Down')
-            vy += 60
+            #print('Down')
+            vy = 60
             vx = 0
-        else:
-            print('The random turn points to the edge, therefore skipped')
+        #else:
+            #print('The random turn points to the edge, therefore skipped')
             
         time.sleep(0.5)           
         # Reposition the robot      
