@@ -90,30 +90,36 @@ robot1_points = 0
 #robot_2=canvas.create_rectangle(550,550,590,590)
 
 
-while True:
-    x1,y1,x2,y2=canvas.coords(robot_1)
 
+print(bonuses['1p'])
+while True:
+    
+    x1,y1,x2,y2=canvas.coords(robot_1)
+    
     x = x1 + 20 # Finding the middle of X coordinatee for ther robot with dimension 40x40
     y = y1 + 20 # Finding the middle of Y coordinatee for ther robot with dimension 40x40
     xy = x , y # Creating a tuple of values to compare with elements in dictionary of bonuses (Dictionary of bonuses only contains middle coordinates)
 
     
+    
     if xy in bonuses['1p']:
         bonuses['1p']=pop_from_tuple(xy,bonuses['1p']) #Function to remove the found element
         
         #Finding the widget with corresponding coordinates
-        for i in range(len(bonuses['1p'])): 
+        for i in range(len(bonuses['1p'])+1): 
             xx, yy, c1, c2 = canvas.coords(yellow_circle[i])
             
-            
+            print(x, xx, y, yy)
             if x - 5 == xx and y - 5 == yy:
-
+                print(' Robot\'s X,Y - 5', x - 5, y - 5, 'Circle\'s X,Y', xx, yy)
                 #Remove it when found
                 canvas.delete(yellow_circle[i]) 
                 yellow_circle.remove(yellow_circle[i]) 
                 
                 robot1_points += 1
+                print(bonuses['1p'])
                 break
+        
 
 
 #Make the robot change direction randomly with possibility 1/5
@@ -145,8 +151,10 @@ while True:
         time.sleep(0.5)           
         # Reposition the robot      
         canvas.coords(robot_1,x1+vx,y1+vy,x2+vx,y2+vy)
+        print('Random Move')
         canvas.update()
-        continue
+        #continue
+        
 
 # If a boundary has been approached, make turn
     if x2 == x_max and vx == 60:
@@ -162,9 +170,11 @@ while True:
         vy = 0
         vx = 60
 
-        # Reposition the robot      
+        # Reposition the robot
+    time.sleep(0.5)
     canvas.coords(robot_1,x1+vx,y1+vy,x2+vx,y2+vy)
+    print('Regular Move ')
     canvas.update()
         # Pause for 0.1 seconds, then delete the image
-    time.sleep(0.5)
+    
 
