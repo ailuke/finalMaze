@@ -21,20 +21,6 @@ canvas.pack(padx=10,pady=10)
 #---------------------
 #---Functions---------
 
-#---Function to obtain the colour of a pixel(From StackOwerflow)
-def get_pixel_color(canvas, x, y):
-    ids = canvas.find_overlapping(x, y, x, y)
-
-    if len(ids) > 0:
-        index = ids[-1]
-        color = canvas.itemcget(index, "fill")
-        color = color.upper()
-        print(index)
-        if color != '':
-            return color.upper()
-'''Helper funtcions from (http://stackoverflow.com/questions/28014347/get-pixel
-#-colors-of-tkinter-canvas)'''
-
 
 #---Function to create a new tuple without a certain object,
 #---will be needed in order for a robot to  collect coins.
@@ -43,49 +29,58 @@ def get_pixel_color(canvas, x, y):
 #---the robot will obtain the appropriate bonus.
 def pop_from_tuple(value,give_tuple):
     t2=tuple()
-    for i in range(len(give_tuple)):
-            if value!=give_tuple[i]:
-                    t2=t2+(t[i],)
+    for indx in range(len(give_tuple)):
+            if value!=give_tuple[indx]:
+                    t2=t2+(give_tuple[indx],)
     return(t2)
 
 #---------------------            
 #---SCRIPT BODY-------
 
-#-Library of bonuses--
+'''Bonus creation and allocation on the arena'''
+
+#-Library of bonuses, values will be tuples with tuples of X,Y coordinates where the bonus is located on the arena--
 bonuses=dict()
-bonuses['1p']=()    #Gives 1 point to a robot      
-bonuses['2p']=()    #Gives 2 points to a robot
-bonuses['3p']=()    #Gives 3 points to a robot
-bonuses['sp']=()    #Increments the speed of a robot
+bonuses['1p']=()    #Key for the tuple containing 1 point bonus coordinates      
+bonuses['2p']=()    #Key for the tuple containing 2 point bonus coordinates 
+bonuses['3p']=()    #Key for the tuple containing 3 point bonus coordinates 
+bonuses['sp']=()    #Key for the tuple containing speed incrementation bonus coordinates 
 
-ij=tuple
+#Algorithm for bonus coordinate insertion into dictionary's tuples with random keys
 
-#Algorithm for coordinate placement into dictionary's tuples with random keys
-#The coordinates are used to find the middle of a cell and place there a coin with bonus
 for x in range(30,630,60):
     for y in range(30,630,60):
         rand_key=random.choice(list(bonuses.keys()))
         xy=(x,y)
         bonuses[rand_key]=bonuses[rand_key]+(xy,)
 
-#Allocating the coins on the arena  
+
+#Arrays that will comprise oval objects to track their location and remove from canvas
+yellow_circle = []
+red_circle = []
+blue_circle = []
+green_circle = []
+
+# Creating oval objects on the canvas based on their coordinates from the dictionary and assigning them to variables 
 for i in range(len(bonuses['1p'])):
     x,y=bonuses['1p'][i]
-    canvas.create_oval(x-5, y-5, x+5, y+5, width=1, fill='yellow')
+    yellow_circle.append(canvas.create_oval(x-5, y-5, x+5, y+5, width=1, fill='yellow'))
 for i in range(len(bonuses['2p'])):
     x,y=bonuses['2p'][i]
-    canvas.create_oval(x-5, y-5, x+5, y+5, width=1, fill='red')
+    red_circle.append(canvas.create_oval(x-5, y-5, x+5, y+5, width=1, fill='red'))
 for i in range(len(bonuses['3p'])):
     x,y=bonuses['3p'][i]
-    canvas.create_oval(x-5, y-5, x+5, y+5, width=1, fill='blue')
+    blue_circle.append(canvas.create_oval(x-5, y-5, x+5, y+5, width=1, fill='blue'))
 for i in range(len(bonuses['sp'])):
     x,y=bonuses['sp'][i]
-    canvas.create_oval(x-5, y-5, x+5, y+5, width=1, fill='green') 
+    green_circle.append(canvas.create_oval(x-5, y-5, x+5, y+5, width=1, fill='green'))
 
 '''Movement of robots starts here'''
+
 # The velocity, or distance moved per time step
 vx = 60.0 # x velocity
 vy = 0.0 # y velocity
+
 
 # Boundaries
 x_min = 10
@@ -94,11 +89,137 @@ x_max = 590
 y_max = 590
 
 #Robots
-robot_1=canvas.create_rectangle(10,10,50,50)
-robot_2=canvas.create_rectangle(550,550,590,590)
 
-for t in range(1, 500):
+robot_1=canvas.create_rectangle(10,10,50,50)
+robot1_points = 0
+
+r1_speedy_steps = 0 # Counter for remaining steps with reduced freeze time
+timr = 0.5 #Default freeze time
+
+while robot1_points < 85:
+    
     x1,y1,x2,y2=canvas.coords(robot_1)
+    
+    x = x1 + 20 # Finding the middle of X coordinatee for ther robot with dimension 40x40
+    y = y1 + 20 # Finding the middle of Y coordinatee for ther robot with dimension 40x40
+    xy = x , y # Creating a tuple of values to compare with elements in dictionary of bonuses (Dictionary of bonuses only contains middle coordinates)
+
+    
+# Checking whether or not the robot's coordinates match with any record in the bonus dictionary
+    if xy in bonuses['1p']:
+        
+        bonuses['1p']=pop_from_tuple(xy,bonuses['1p']) #Function to remove the found element
+        
+        #Finding the widget with corresponding coordinates
+        for i in range(len(bonuses['1p'])+1): 
+            xx, yy, c1, c2 = canvas.coords(yellow_circle[i])
+            
+            if x - 5 == xx and y - 5 == yy: #Checking the robot's middle coordinates with circle's ones
+
+                #If match remove from the canvas and dictionary
+                canvas.delete(yellow_circle[i]) 
+                yellow_circle.remove(yellow_circle[i]) 
+                
+                robot1_points += 1
+                break
+
+    elif xy in bonuses['2p']:
+        
+        bonuses['2p'] = pop_from_tuple(xy,bonuses['2p'])
+        
+        for i in range(len(bonuses['2p'])+1): 
+            xx, yy, c1, c2 = canvas.coords(red_circle[i])
+            
+            if x - 5 == xx and y - 5 == yy:
+
+                canvas.delete(red_circle[i]) 
+                red_circle.remove(red_circle[i]) 
+                
+                robot1_points += 2
+                break
+
+    elif xy in bonuses['3p']:
+        
+        bonuses['3p'] = pop_from_tuple(xy,bonuses['3p'])
+        
+        for i in range(len(bonuses['3p'])+1): 
+            xx, yy, c1, c2 = canvas.coords(blue_circle[i])
+            
+            if x - 5 == xx and y - 5 == yy:
+
+                canvas.delete(blue_circle[i]) 
+                blue_circle.remove(blue_circle[i]) 
+                
+                robot1_points += 3
+                break
+            
+    elif xy in bonuses['sp']:
+        
+        bonuses['sp']=pop_from_tuple(xy,bonuses['sp'])
+        
+        for i in range(len(bonuses['sp'])+1): 
+            xx, yy, c1, c2 = canvas.coords(green_circle[i])
+            
+            if x - 5 == xx and y - 5 == yy:
+ 
+                canvas.delete(green_circle[i]) 
+                green_circle.remove(green_circle[i]) 
+                
+                timr = 0.25 # Reduce programm's freeze time
+                r1_speedy_steps += 2 # Set the amount of steps with reduced freeze time
+                break
+
+        
+        
+
+
+#Make the robot change direction randomly with possibility 1/5
+    RandomVal=random.randint(1,5)
+    if RandomVal == 5:
+        
+        RandomVal = random.randint(1,4)
+        if RandomVal == 1 and x1 != x_min: # Left
+            vx = -60
+            vy = 0
+            
+        elif RandomVal == 2 and x2 != x_max: # Right
+            vx = 60
+            vy = 0
+            
+        elif RandomVal == 3 and y1 != y_min: # Up
+            vy = -60
+            vx = 0
+            
+        elif RandomVal == 4 and y2 != y_max: # Down
+            vy = 60
+            vx = 0
+
+        #If the robot has left the arena, it will reappear in the center.
+        if x1 < x_min or y1 < y_min or x2 > x_max or y2 > y_max:
+            x1 = 250
+            y1 = 250
+            x2 = 290
+            y2 = 290
+            
+        time.sleep(timr)
+
+        # Reduce amount of remaining speedy steps after a move and
+        # reset the timer to the default time when r1_speedy_steps == 0
+        
+        if r1_speedy_steps > 0:
+            r1_speedy_steps -= 1
+
+            if r1_speedy_steps == 0:
+                timr = 0.5
+
+
+
+            
+        
+        # Reposition the robot      
+        canvas.coords(robot_1,x1+vx,y1+vy,x2+vx,y2+vy)
+        canvas.update()
+        #continue
         
 
 # If a boundary has been approached, make turn
@@ -115,41 +236,20 @@ for t in range(1, 500):
         vy = 0
         vx = 60
 
-        # Reposition the robot      
+        
+    time.sleep(timr)
+
+    #Dealing with speedy steps again
+    if r1_speedy_steps > 0:
+        r1_speedy_steps -= 1
+
+        if r1_speedy_steps == 0:
+            timr = 0.5
+
+    # Reposition the robot        
     canvas.coords(robot_1,x1+vx,y1+vy,x2+vx,y2+vy)
     canvas.update()
         # Pause for 0.1 seconds, then delete the image
-    time.sleep(0.5)
-
-#Make the robot change direction randomly with possibility 1/5
-    RandomVal=random.randint(1,5)
-    print(RandomVal)
-    if RandomVal == 5:
-        RandomVal1 = random.randint(1,4)
-        if RandomVal1 == 1 and x1 != x_min: # Left
-            print('Left')
-            vx -= 60
-            vy = 0
-            
-        elif RandomVal1 == 2 and x2 != x_max: # Right
-            print('Right')
-            vx += 60
-            vy = 0
-            
-        elif RandomVal1 == 3 and y1 != y_min: # Up
-            print('Up')
-            vy -= 60
-            vx = 0
-            
-        elif RandomVal1 == 4 and y2 != y_max: # Down
-            print('Down')
-            vy += 60
-            vx = 0
-        else:
-            print('The random turn point to the edge, therefore skipped')
-            
-        time.sleep(2.5)           
-        # Reposition the robot      
-        canvas.coords(robot_1,x1+vx,y1+vy,x2+vx,y2+vy)
-        canvas.update()
-
+    
+canvas.destroy()
+print('The robot collected 85 points')
