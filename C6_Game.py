@@ -96,7 +96,7 @@ robot1_points = 0
 r1_speedy_steps = 0 # Counter for remaining steps with reduced freeze time
 timr = 0.5 #Default freeze time
 
-while robot1_points < 75:
+while robot1_points < 85:
     
     x1,y1,x2,y2=canvas.coords(robot_1)
     
@@ -105,7 +105,7 @@ while robot1_points < 75:
     xy = x , y # Creating a tuple of values to compare with elements in dictionary of bonuses (Dictionary of bonuses only contains middle coordinates)
 
     
-    # Checking whether or not the robot's coordinates match with any record in the bonus dictionary
+# Checking whether or not the robot's coordinates match with any record in the bonus dictionary
     if xy in bonuses['1p']:
         
         bonuses['1p']=pop_from_tuple(xy,bonuses['1p']) #Function to remove the found element
@@ -193,6 +193,13 @@ while robot1_points < 75:
         elif RandomVal == 4 and y2 != y_max: # Down
             vy = 60
             vx = 0
+
+        #If the robot has left the arena, it will reappear in the center.
+        if x1 < x_min or y1 < y_min or x2 > x_max or y2 > y_max:
+            x1 = 250
+            y1 = 250
+            x2 = 290
+            y2 = 290
             
         time.sleep(timr)
 
@@ -245,4 +252,4 @@ while robot1_points < 75:
         # Pause for 0.1 seconds, then delete the image
     
 canvas.destroy()
-print('The robot collected 75 points')
+print('The robot collected 85 points')
