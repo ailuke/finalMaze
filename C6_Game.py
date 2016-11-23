@@ -5,6 +5,10 @@ from tkinter import *
 import random
 import time
 
+#USER INPUT
+
+thrshld = input('Set point threshold for victory (1 - 300) ')
+thrshld = int(thrshld)
 #---Setting up GUI, adjusting Tk window
 #--------------------
 
@@ -96,7 +100,7 @@ robot1_points = 0
 r1_speedy_steps = 0 # Counter for remaining steps with reduced freeze time
 timr = 0.5 #Default freeze time
 
-while robot1_points < 85:
+while robot1_points < thrshld:
     
     x1,y1,x2,y2=canvas.coords(robot_1)
     
@@ -251,5 +255,5 @@ while robot1_points < 85:
     canvas.update()
         # Pause for 0.1 seconds, then delete the image
     
-canvas.destroy()
-print('The robot collected 85 points')
+window.destroy()
+print('The robot collected '+str(thrshld)+' points')
