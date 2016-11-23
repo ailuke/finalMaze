@@ -7,8 +7,26 @@ import time
 
 #USER INPUT
 
-thrshld = input('Set point threshold for victory (1 - 300) ')
-thrshld = int(thrshld)
+while True:
+    
+    thrshld = input('Set point threshold for victory (1 - 300) ')
+
+    try:                # checking for convertibility to integer
+        int(thrshld)
+    
+    except ValueError:
+        print('Please enter integer 1 - 300')
+        continue
+        
+    thrshld = int(thrshld)
+    
+    if thrshld > 300 or thrshld < 1:    #Checking if the range is correct
+        print('Please enter 1 - 300')
+        continue
+
+    else:
+        break
+    
 #---Setting up GUI, adjusting Tk window
 #--------------------
 
