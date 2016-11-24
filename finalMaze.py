@@ -1,5 +1,4 @@
 from tkinter import *
-import time
 import random
 import re
 
@@ -78,13 +77,55 @@ Next(1,1)
 
 
 
+def pathFinder(x,y):
+
+    up = maze[y+1][x]
+    down = maze[y-1][x]
+    left = maze[y][x+1]
+    right = maze[y][x-1]
+
+    if up == 4 or down == 4 or left == 4 or right == 4:
+        return
+
+    elif up == 0 or down == 0 or left == 0 or right == 0: maze[y][x]=2
+    else: maze[y][x]=3
+
+
+    if up == 0: pathFinder(x,y+1)
+    elif down == 0: pathFinder(x,y-1)
+    elif left == 0: pathFinder(x+1,y)
+    elif right == 0: pathFinder(x-1,y)
+
+
+    elif up == 2:
+        pathFinder(x, y + 1)
+    elif down == 2:
+        pathFinder(x, y - 1)
+    elif left == 2:
+        pathFinder(x + 1, y)
+    elif right == 2:
+        pathFinder(x - 1, y)
+
+
+
+maze[29][29] = 4
+pathFinder(1,1)
 
 canvas = Canvas(window,width=width*block,height=height*block,bg="white")
 canvas.pack(padx=10,pady=10)
 for y in range(len(maze)):
     for x in range(len(maze[y])):
-        if maze[y][x] == 1: maze[y][x] = canvas.create_rectangle(x*block,y*block,x*block+block,y*block+block,fill='black',width=0)
+        if maze[y][x] == 4: maze[y][x] = canvas.create_rectangle(x * block, y * block, x * block + block,
+                                                                 y * block + block, fill='red', width=0)
+        elif maze[y][x] == 1: maze[y][x] = canvas.create_rectangle(x*block,y*block,x*block+block,y*block+block,fill='black',width=0)
         elif maze[y][x] == 0: maze[y][x] = canvas.create_rectangle(x*block,y*block,x*block+block,y*block+block,fill='gold',width=0)
+        elif maze[y][x] == 2:
+            maze[y][x] = canvas.create_rectangle(x * block, y * block, x * block + block, y * block + block,
+                                                 fill='blue', width=0)
+        elif maze[y][x] == 3:
+            maze[y][x] = canvas.create_rectangle(x * block, y * block, x * block + block, y * block + block,
+                                                 fill='purple', width=0)
 window.mainloop()
+
 
 
