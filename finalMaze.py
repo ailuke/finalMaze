@@ -4,19 +4,15 @@ import re
 
 #---Setting up GUI
 
-
 window = Tk()
-
 window.title('Maze')
 
 #------- script canvas body -------#
 
 block = 20
-width = 31
+width = 31  #sets the maze grid to 30 x 30
 height = 31
 maze = [[1 for x in range(width)]for y in range(height)]
-
-
 
 def Direction(x,y,necessity):
     direction = 15
@@ -79,24 +75,24 @@ Next(1,1)
 def pathFinder(x,y):
 
     up = maze[y+1][x]
-    down = maze[y-1][x]
+    down = maze[y-1][x] #sets the movement for the algorithm
     left = maze[y][x+1]
     right = maze[y][x-1]
 
-    if up == 4 or down == 4 or left == 4 or right == 4:
-        return
+    if up == 4 or down == 4 or left == 4 or right == 4: #4 is the end goal
+        return                                          #if the next space is 4, then the maze ends
 
-    elif up == 0 or down == 0 or left == 0 or right == 0: maze[y][x]=2
-    else: maze[y][x]=3
+    elif up == 0 or down == 0 or left == 0 or right == 0: maze[y][x]=2 #if the next space is 0, or empty, then it moves to that block
+    else: maze[y][x]=3                                  #if that space has been moved over then a purple line is left behind
 
 
-    if up == 0: pathFinder(x,y+1)
-    elif down == 0: pathFinder(x,y-1)
+    if up == 0: pathFinder(x,y+1)       #the algorithm prioritizes up, left, down then right
+    elif down == 0: pathFinder(x,y-1)   #it will move into the first empty space it finds
     elif left == 0: pathFinder(x+1,y)
     elif right == 0: pathFinder(x-1,y)
 
 
-    elif up == 2:
+    elif up == 2:               #if no untravelled space is found, it will move onto a space it went over before
         pathFinder(x, y + 1)
     elif down == 2:
         pathFinder(x, y - 1)
@@ -107,8 +103,8 @@ def pathFinder(x,y):
 
 
 
-maze[29][29] = 4
-pathFinder(1,1)
+maze[29][29] = 4    #sets the spawn location of the end goal
+pathFinder(1,1)     #sets the spawn location for 
 
 canvas = Canvas(window,width=width*block,height=height*block,bg="white")
 canvas.pack(padx=10,pady=10)
@@ -116,19 +112,19 @@ for y in range(len(maze)):
     for x in range(len(maze[y])):
         if maze[y][x] == 4:
             maze[y][x] = canvas.create_rectangle(x * block, y * block, x * block + block,y * block + block,
-                                                 fill='red', width=0)
+                                                 fill='red', width=0)       #sets the end goal block to red
         elif maze[y][x] == 1:
             maze[y][x] = canvas.create_rectangle(x*block,y*block,x*block+block,y*block+block,
-                                                 fill='black',width=0)
+                                                 fill='black',width=0)      #sets the wall block to black
         elif maze[y][x] == 0:
             maze[y][x] = canvas.create_rectangle(x*block,y*block,x*block+block,y*block+block,
-                                                 fill='gray',width=0)
+                                                 fill='gray',width=0)       #sets the empty space to gray
         elif maze[y][x] == 2:
             maze[y][x] = canvas.create_rectangle(x * block, y * block, x * block + block, y * block + block,
-                                                 fill='blue', width=0)
+                                                 fill='blue', width=0)      #sets the travelled over path to blue
         elif maze[y][x] == 3:
             maze[y][x] = canvas.create_rectangle(x * block, y * block, x * block + block, y * block + block,
-                                                 fill='purple', width=0)
+                                                 fill='purple', width=0)    #sets the travelled over twice path to purple
 window.mainloop()
 
 
