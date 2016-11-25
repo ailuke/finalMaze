@@ -104,7 +104,7 @@ def pathFinder(x,y):
 
 
 maze[29][29] = 4    #sets the spawn location of the end goal
-pathFinder(1,1)     #sets the spawn location for 
+pathFinder(1,1)     #sets the spawn location for algorithm to start
 
 canvas = Canvas(window,width=width*block,height=height*block,bg="white")
 canvas.pack(padx=10,pady=10)
